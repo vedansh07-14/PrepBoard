@@ -123,8 +123,7 @@ function SidebarContent({
                       </div>
                     </div>
                   </button>
-                  {subject.id !== DEFAULT_SUBJECT.id && (
-                    showDeleteConfirm === subject.id ? (
+                  {showDeleteConfirm === subject.id ? (
                       <div className="flex items-center gap-1 shrink-0">
                         <button onClick={() => deleteSubject(subject.id)} className="text-[10px] text-red-400 hover:text-red-300 px-1.5 py-0.5 rounded focus:outline-none bg-red-400/10">del</button>
                         <button onClick={() => setShowDeleteConfirm(null)} className="text-[10px] text-text-muted px-1 py-0.5 rounded focus:outline-none">✕</button>
@@ -134,8 +133,7 @@ function SidebarContent({
                         className="opacity-0 group-hover/subj:opacity-100 transition-opacity text-text-muted hover:text-red-400 p-1 focus:outline-none shrink-0">
                         <Trash2 className="w-3 h-3" />
                       </button>
-                    )
-                  )}
+                    )}
                 </div>
               );
             })}
@@ -289,11 +287,17 @@ function App() {
   };
 
   const deleteSubject = async (subjectId) => {
-    if (subjectId === DEFAULT_SUBJECT.id) return;
     const nextSubjects = subjects.filter(s => s.id !== subjectId);
     const { [subjectId]: _, ...nextProgress } = subjectProgress;
     await updateData({ subjects: nextSubjects, subjectProgress: nextProgress });
-    if (activeSubjectId === subjectId) setActiveSubjectId(DEFAULT_SUBJECT.id);
+    if (activeSubjectId === subjectId) {
+      if (nextSubjects.length > 0) {
+        setActiveSubjectId(nextSubjects[0].id);
+      } else {
+        setActiveSubjectId(null);
+        setActiveTab('import');
+      }
+    }
     setShowDeleteConfirm(null);
   };
 
@@ -311,15 +315,36 @@ function App() {
   };
 
   const renderContent = () => {
-    if (!activeSubject) return null;
     switch (activeTab) {
-      case 'dashboard': return <Dashboard activeSubject={activeSubject} completedTopics={completedTopics} studyLogs={studyLogs} />;
-      case 'units': return <UnitTracker units={activeSubject.units} completedTopics={completedTopics} toggleTopic={toggleTopic} onUpdateUnits={updateActiveUnits} />;
-      case 'planner': return <StudyPlanner activeSubject={activeSubject} completedTopics={completedTopics} toggleTopic={toggleTopic} storedPlan={aiStudyPlans[activeSubject.id]} onSavePlan={updateStudyPlan} />;
-      case 'logs': return <DailyLogger studyLogs={studyLogs} setStudyLogs={setStudyLogs} />;
-      case 'analytics': return <Analytics studyLogs={studyLogs} />;
-      case 'import': return <SyllabusImporter onSubjectCreated={addSubject} />;
-      default: return <Dashboard activeSubject={activeSubject} completedTopics={completedTopics} studyLogs={studyLogs} />;
+      case 'import': 
+        return <SyllabusImporter onSubjectCreated={addSubject} />;
+      case 'logs': 
+        return <DailyLogger studyLogs={studyLogs} setStudyLogs={setStudyLogs} />;
+      case 'analytics': 
+        return <Analytics studyLogs={studyLogs} />;
+      default:
+        if (!activeSubject) {
+          return (
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+              className="flex flex-col items-center justify-center py-20 md:py-32 text-center max-w-md mx-auto">
+               <div className="w-20 h-20 rounded-3xl bg-surface-2 border border-border flex items-center justify-center mb-6 shadow-xl shadow-black/5">
+                 <Sparkles className="w-10 h-10 text-primary" />
+               </div>
+               <h2 className="text-3xl font-black tracking-tight text-text mb-3">Your Board is Empty</h2>
+               <p className="text-text-muted mb-8 text-sm font-medium leading-relaxed">
+                 You have no subjects left. Import a syllabus or create a new subject to start tracking your progress.
+               </p>
+               <button onClick={() => setActiveTab('import')} 
+                 className="btn-primary text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/20 hover:scale-105 transition-transform flex items-center gap-2">
+                 <Plus className="w-4 h-4" /> Add via AI Import
+               </button>
+            </motion.div>
+          );
+        }
+        if (activeTab === 'dashboard') return <Dashboard activeSubject={activeSubject} completedTopics={completedTopics} studyLogs={studyLogs} />;
+        if (activeTab === 'units') return <UnitTracker units={activeSubject.units} completedTopics={completedTopics} toggleTopic={toggleTopic} onUpdateUnits={updateActiveUnits} />;
+        if (activeTab === 'planner') return <StudyPlanner activeSubject={activeSubject} completedTopics={completedTopics} toggleTopic={toggleTopic} storedPlan={aiStudyPlans[activeSubject.id]} onSavePlan={updateStudyPlan} />;
+        return <Dashboard activeSubject={activeSubject} completedTopics={completedTopics} studyLogs={studyLogs} />;
     }
   };
 
