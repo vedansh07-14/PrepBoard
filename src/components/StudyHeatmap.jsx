@@ -179,7 +179,7 @@ export default function StudyHeatmap({ logs }) {
                           <div className="bg-surface-2 border border-border rounded-xl p-3 shadow-xl whitespace-nowrap">
                             <p className="text-[10px] font-black text-text tracking-tight">{format(day.date, 'PPPP')}</p>
                             <p className="text-[10px] text-emerald-400 font-bold mt-1 flex items-center gap-1.5">
-                              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                              <span className="w-1.5 h-1.5 inline-block rounded-full bg-emerald-400" />
                               {day.hours} hours studied
                             </p>
                           </div>

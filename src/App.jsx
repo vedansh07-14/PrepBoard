@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, BookOpen, Clock, BarChart2, Sparkles,
-  Menu, X, Plus, Trash2, Brain, LogOut, GraduationCap, Settings, Sun, Moon
+  Menu, X, Plus, Trash2, Brain, LogOut, GraduationCap, Settings, Sun, Moon, Calendar
 } from 'lucide-react';
 import { useAuth } from './contexts/AuthContext';
 import { useTheme } from './contexts/ThemeContext';
@@ -16,10 +16,12 @@ import SyllabusImporter from './components/SyllabusImporter';
 import Login from './components/Login';
 import Onboarding from './components/Onboarding';
 import ProfileEditModal from './components/ProfileEditModal';
+import StudyPlanner from './components/StudyPlanner';
 
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'units', label: 'Units & Topics', icon: BookOpen },
+  { id: 'planner', label: 'AI Planner', icon: Calendar, badge: 'NEW' },
   { id: 'logs', label: 'Daily Log', icon: Clock },
   { id: 'analytics', label: 'Analytics', icon: BarChart2 },
   { id: 'import', label: 'AI Import', icon: Sparkles, badge: 'AI' },
@@ -211,7 +213,7 @@ function App() {
 
   useEffect(() => { setIsMobileMenuOpen(false); }, [activeTab, activeSubjectId]);
 
-  const { subjects = [DEFAULT_SUBJECT], subjectProgress = {}, studyLogs = [], profile = null, photoURL = null } = userData || {};
+  const { subjects = [DEFAULT_SUBJECT], subjectProgress = {}, studyLogs = [], profile = null, photoURL = null, aiStudyPlans = {} } = userData || {};
 
   useEffect(() => {
     if (subjects.length > 0 && !subjects.find(s => s.id === activeSubjectId)) {
@@ -299,11 +301,21 @@ function App() {
     await updateData({ studyLogs: newLogs });
   };
 
+  const updateStudyPlan = async (planData) => {
+    await updateData({
+      aiStudyPlans: {
+        ...aiStudyPlans,
+        [activeSubject.id]: planData
+      }
+    });
+  };
+
   const renderContent = () => {
     if (!activeSubject) return null;
     switch (activeTab) {
       case 'dashboard': return <Dashboard activeSubject={activeSubject} completedTopics={completedTopics} studyLogs={studyLogs} />;
       case 'units': return <UnitTracker units={activeSubject.units} completedTopics={completedTopics} toggleTopic={toggleTopic} onUpdateUnits={updateActiveUnits} />;
+      case 'planner': return <StudyPlanner activeSubject={activeSubject} completedTopics={completedTopics} toggleTopic={toggleTopic} storedPlan={aiStudyPlans[activeSubject.id]} onSavePlan={updateStudyPlan} />;
       case 'logs': return <DailyLogger studyLogs={studyLogs} setStudyLogs={setStudyLogs} />;
       case 'analytics': return <Analytics studyLogs={studyLogs} />;
       case 'import': return <SyllabusImporter onSubjectCreated={addSubject} />;

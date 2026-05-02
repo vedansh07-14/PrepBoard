@@ -9,10 +9,11 @@
 
 ## 📖 Project Overview
 
-**PrepBoard** is a modern, responsive web application designed to help students track and optimize their exam preparation. It provides an intuitive dashboard to manage multiple subjects, topics, and study logs. With our powerful AI-based syllabus import, users can instantly convert raw syllabus text or PDFs into an organized tracker, saving hours of manual setup.
+**PrepBoard** is a modern, responsive web application designed to help students track and optimize their exam preparation. It provides an intuitive dashboard to manage multiple subjects, topics, and study logs. With powerful AI tools built-in, you can instantly convert raw syllabus text or PDFs into an organized tracker and automatically generate personalized daily study roadmaps using n8n webhooks.
 
 ## ✨ Key Features
 
+- **AI Study Planner:** Automatically generate dynamic, personalized daily study roadmaps based on your exam date and remaining incomplete topics.
 - **Multi-Subject Tracking:** Seamlessly manage different subjects and keep your study progress organized.
 - **Topic-wise Checklist System:** Break down large subjects into manageable units and topics.
 - **AI Syllabus Import:** Upload a PDF or paste text, and let AI automatically generate a structured study tracker.
@@ -29,7 +30,9 @@
 
 - **Frontend:** React + Vite + Tailwind CSS + Framer Motion
 - **Backend:** Firebase (Authentication + Firestore)
-- **AI Integration:** Groq / OpenAI API (for lightning-fast syllabus parsing)
+- **AI Integration:** 
+  - Groq / OpenAI API (for lightning-fast syllabus parsing)
+  - n8n Webhooks (for intelligent daily roadmap generation)
 - **State Management:** React Context API
 - **Icons & UI:** Lucide React
 
@@ -44,6 +47,9 @@
 
 ### AI Syllabus Importer
 *(Add your AI Importer screenshot here - `![AI Import](./docs/ai-import.png)`)*
+
+### AI Study Planner (New)
+*(Add your AI Planner screenshot here - `![AI Planner](./docs/ai-planner.png)`)*
 
 ### GitHub-style Consistency Heatmap
 *(Add your Heatmap screenshot here - `![Heatmap](./docs/heatmap.png)`)*
@@ -92,6 +98,7 @@ VITE_FIREBASE_APP_ID=your_firebase_app_id
 VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
 
 VITE_GROQ_API_KEY=your_groq_api_key
+VITE_N8N_WEBHOOK_URL=your_n8n_study_planner_webhook_url
 ```
 
 **4. Run the development server**
@@ -104,8 +111,9 @@ npm run dev
 1. **Sign In:** Use your Google account to log into PrepBoard.
 2. **Setup Subjects:** Add a subject manually or use the **AI Import** feature to generate units and topics directly from your syllabus PDF/text.
 3. **Track Progress:** Mark topics as complete as you study them.
-4. **Log Daily Effort:** Use the Daily Logger to record hours spent and PYQs solved.
-5. **Analyze:** Check your dashboard and heatmap to visualize your consistency and overall progress.
+4. **Generate Study Plan:** Navigate to the AI Planner tab, enter your target exam date, and instantly receive a personalized day-by-day roadmap grouping concepts, practice, and revision!
+5. **Log Daily Effort:** Use the Daily Logger to record hours spent and PYQs solved.
+6. **Analyze:** Check your dashboard and heatmap to visualize your consistency and overall progress.
 
 ## 🔮 Future Improvements
 
