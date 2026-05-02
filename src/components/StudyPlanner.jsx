@@ -189,6 +189,29 @@ export default function StudyPlanner({ activeSubject, completedTopics, toggleTop
         )}
       </AnimatePresence>
 
+      {/* Loading State */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }} 
+            animate={{ opacity: 1, scale: 1 }} 
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="flex flex-col items-center justify-center py-24 text-center"
+          >
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse" />
+              <div className="w-20 h-20 bg-surface border border-primary/20 rounded-3xl flex items-center justify-center shadow-2xl shadow-primary/10 relative z-10">
+                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+              </div>
+            </div>
+            <h3 className="text-xl font-black tracking-tight text-text mb-2 animate-pulse">Architecting your roadmap...</h3>
+            <p className="text-sm font-medium text-text-muted/80 max-w-sm">
+              Our AI is analyzing your syllabus and building the perfect schedule. This usually takes about 10-20 seconds.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Plan Display Section */}
       <AnimatePresence mode="wait">
         {plan && !loading && (
