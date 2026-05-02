@@ -18,6 +18,25 @@ import Onboarding from './components/Onboarding';
 import ProfileEditModal from './components/ProfileEditModal';
 import StudyPlanner from './components/StudyPlanner';
 
+function RealTimeClock() {
+  const [time, setTime] = useState(new Date());
+  
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="flex flex-col items-end text-right shrink-0">
+      <span className="text-xs font-black tracking-widest text-primary drop-shadow-sm">
+        {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+      </span>
+      <span className="text-[8px] font-bold uppercase tracking-wider text-text-muted/80">
+        {time.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })}
+      </span>
+    </div>
+  );
+}
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'units', label: 'Units & Topics', icon: BookOpen },
@@ -49,16 +68,17 @@ function SidebarContent({
 
   return (
     <div className="flex flex-col h-full bg-surface-2">
-      <div className="px-5 py-5 border-b border-border">
-        <div className="flex items-center gap-3">
+      <div className="px-5 py-5 border-b border-border flex items-center justify-between gap-2">
+        <div className="flex items-center gap-3 min-w-0">
           <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-primary/10 shrink-0">
             <img src="/logo.png" alt="PrepBoard Logo" className="w-full h-full object-cover" />
           </div>
-          <div>
-            <p className="font-bold text-base text-gradient tracking-tight">PrepBoard</p>
-            <p className="text-[10px] text-text-muted -mt-0.5 font-bold uppercase tracking-widest">Mastery Hub</p>
+          <div className="min-w-0">
+            <p className="font-bold text-base text-gradient tracking-tight truncate">PrepBoard</p>
+            <p className="text-[10px] text-text-muted -mt-0.5 font-bold uppercase tracking-widest truncate">Mastery Hub</p>
           </div>
         </div>
+        <RealTimeClock />
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
